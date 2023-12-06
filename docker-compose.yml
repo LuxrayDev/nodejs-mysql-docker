@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  #Configuración del servicio mysql
+  mysqldb:
+    image: mysql #imagen de mysql
+    env_file: ./.env #ruta de las variables de entorno
+    #Variables de entorno provenientes del archivo .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    #Puertos que se utilizan
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+
+  # Configuracion de nodejs
+  app:
+    #Ubicacion del dockerfile para crear el servicio
+    build: . 
+    depends_on:
+      - mysqldb #Aqui indica que depende de mysql y su comunicacion 
+    links:
+      - mysqldb
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT # puertos que usa
